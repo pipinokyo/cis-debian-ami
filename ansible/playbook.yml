@@ -1,0 +1,23 @@
+- name: Harden Debian 12 with CIS Benchmark
+  hosts: all
+  become: true
+  # remote_user: admin
+
+  vars:
+    setup_audit: true
+    run_audit: true
+    audit_run_heavy_tests: true
+    deb12cis_rule_5_2_4: false          # Skip: user 'admin' is locked (uses SSH keys)
+    deb12cis_rule_5_4_1_1: false        # Skip: password expiration policy
+    deb12cis_rule_5_4_2_4: false        # Skip: root password must be set (root is disabled)
+    deb12cis_sshd:
+      allow_users: "admin"
+      allow_groups: "admin"
+      client_alive_interval: 900
+    deb12cis_ufw_allow_out_ports:
+      - 53
+      - 80
+      - 443
+
+  roles:
+    - DEBIAN12-CIS
